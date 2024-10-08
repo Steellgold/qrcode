@@ -4,7 +4,7 @@ import { ReactElement, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History, Globe, Palette, Bookmark, Braces } from "lucide-react";
+import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History, Globe, Palette, Bookmark } from "lucide-react";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -75,8 +75,7 @@ export const Customizer = (): ReactElement => {
   const [eyeRadius, setEyeRadius] = useState(0);
   const [qrStyle, setQRStyle] = useState<"squares" | "dots" | "fluid">("squares");
 
-  const [destUrl, setDestUrl] = useState("https://steellgold.fr");
-  const [qrUrl, setQRUrl] = useState("https://qr-color.vercel.app");
+  const [content, setContent] = useState("https://qr-color.vercel.app/");
 
   const handleRandomTheme = () => {
     const theme = themes[Math.floor(Math.random() * themes.length)];
@@ -85,7 +84,6 @@ export const Customizer = (): ReactElement => {
     setEyeRadius(theme.eyeRadius ?? eyeRadius);
     setQRStyle(theme.qrStyle ?? qrStyle);
 
-    buildQRUrl();
     addThemeToHistory({ name: "Custom", colors: theme.colors, eyeRadius: theme.eyeRadius, qrStyle: theme.qrStyle });
   }
 
@@ -100,8 +98,7 @@ export const Customizer = (): ReactElement => {
     setTheme({ name: "Custom", colors: [bgColor, fgColor, eyeColor] });
     setEyeRadius(eyeRadius);
     setQRStyle(qrStyle);
-
-    buildQRUrl();
+    
     addThemeToHistory({ name: "Custom", colors: [bgColor, fgColor, eyeColor], eyeRadius, qrStyle });
   }
 
@@ -116,15 +113,6 @@ export const Customizer = (): ReactElement => {
     setEyeRadius(history[index].eyeRadius ?? eyeRadius);
     setQRStyle(history[index].qrStyle ?? qrStyle);
     setHistory(history.slice(0, index + 1));
-  }
-
-  const buildQRUrl = () => {
-    let url = "https://qr-color.vercel.app";
-    url += `?url=${destUrl}`;
-    if (selectedTheme.name !== "Default") url += `&theme=${selectedTheme.name}`;
-    if (eyeRadius !== 0) url += `&eyeRadius=${eyeRadius}`;
-    if (qrStyle !== "squares") url += `&qrStyle=${qrStyle}`;
-    setQRUrl(url);
   }
 
   const copyImage = async () => {
@@ -171,7 +159,7 @@ export const Customizer = (): ReactElement => {
 
       <div className="sm:w-[515px] flex flex-col gap-2">
         <label htmlFor="destUrl" className="text-sm text-muted-foreground">Destination URL</label>
-        <Input id="destUrl" value={destUrl} onChange={(e) => setDestUrl(e.target.value)} />
+        <Input id="destUrl" value={content} onChange={(e) => setContent(e.target.value)} />
       </div>
 
       <div className="flex flex-col sm:flex-row sm:w-[515px] sm:mx-auto gap-3">
@@ -179,7 +167,7 @@ export const Customizer = (): ReactElement => {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
               <QRCode
-                value={destUrl}
+                value={content}
                 size={128}
                 bgColor={selectedTheme.colors[0]}
                 fgColor={selectedTheme.colors[1]}
@@ -237,14 +225,6 @@ export const Customizer = (): ReactElement => {
             </div>
 
             <div className="flex flex-row justify-center gap-0.5">
-              {/* copy to clipboard the qrUrl */}
-              <Button variant="outline" size="icon" onClick={() => {
-                navigator.clipboard.writeText(qrUrl);
-                toast.success("The QR code URL has been copied to the clipboard");
-              }}>
-                <Braces className="h-4 w-4" />
-              </Button>
-
               <Button variant="outline" size="icon" onClick={() => copyImage()}>
                 <Copy className="h-4 w-4" />
               </Button>
@@ -275,7 +255,6 @@ export const Customizer = (): ReactElement => {
                   title={theme.name}
                   onClick={() => {
                     setTheme(theme);
-                    buildQRUrl();
                   }}
                 >
                   {theme.colors.map((color: string, index: number) => {
