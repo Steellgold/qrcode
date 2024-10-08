@@ -51,9 +51,9 @@ export const metadata: Metadata = {
 const RootLayout: Component<PropsWithChildren> = ({ children }) => {
   return (
     <html lang="en">
-      <script defer src="https://woyage.app/track.js" data-website-id="6e9ac9c6-fc6e-4100-ae66-e2ab6e4532e6"></script>
-      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <script defer src="https://woyage.app/track.js" data-website-id="6e9ac9c6-fc6e-4100-ae66-e2ab6e4532e6"></script>
+
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <Toaster />
           {children}
