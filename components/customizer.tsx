@@ -4,7 +4,7 @@ import { ReactElement, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History, Globe, Palette, Bookmark } from "lucide-react";
+import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History, Globe, Palette, Bookmark, Braces } from "lucide-react";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -237,6 +237,14 @@ export const Customizer = (): ReactElement => {
             </div>
 
             <div className="flex flex-row justify-center gap-0.5">
+              {/* copy to clipboard the qrUrl */}
+              <Button variant="outline" size="icon" onClick={() => {
+                navigator.clipboard.writeText(qrUrl);
+                toast.success("The QR code URL has been copied to the clipboard");
+              }}>
+                <Braces className="h-4 w-4" />
+              </Button>
+
               <Button variant="outline" size="icon" onClick={() => copyImage()}>
                 <Copy className="h-4 w-4" />
               </Button>
