@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "./ui/button";
 import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Globe, Palette, Bookmark } from "lucide-react";
@@ -97,6 +97,15 @@ export const Customizer = (): ReactElement => {
       document.body.removeChild(downloadLink);
     }
   }
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const content = urlParams.get("content");
+
+    if(content) {
+      setContent(content);
+    }
+  }, []);
 
   return (
     <div className="bg-primary/5 p-5 flex flex-col gap-5 border-2 border-primary/10 rounded-lg shadow-lg">
