@@ -158,7 +158,7 @@ export const Customizer = (): ReactElement => {
       </div>
 
       <div className="sm:w-[515px] flex flex-col gap-2">
-        <label htmlFor="destUrl" className="text-sm text-muted-foreground">Destination URL</label>
+        <label htmlFor="destUrl" className="text-sm text-muted-foreground">Content</label>
         <Input id="destUrl" value={content} onChange={(e) => setContent(e.target.value)} />
       </div>
 

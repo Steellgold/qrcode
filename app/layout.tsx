@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Component } from "@/components/ui/component";
 import { PropsWithChildren } from "react";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import localFont from "next/font/local";
+import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -51,6 +51,8 @@ export const metadata: Metadata = {
 const RootLayout: Component<PropsWithChildren> = ({ children }) => {
   return (
     <html lang="en">
+      <script defer src="https://woyage.app/track.js" data-website-id="6e9ac9c6-fc6e-4100-ae66-e2ab6e4532e6"></script>
+      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <Toaster />
