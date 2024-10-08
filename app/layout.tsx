@@ -20,6 +20,21 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Colored QR Code",
   description: "Generate and share colored QR codes with ease.",
+  keywords: ["QR Code", "Color", "Colors", "Generator", "Share", "Link"],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://qr-color.vercel.app/",
+    siteName: "Colored QR Code",
+    title: "Colored QR Code",
+    description: "Generate and share colored QR codes with ease.",
+    images: [
+      {
+        url: "https://qr-color.vercel.app/og-image.png",
+        alt: "Colored QR Code",
+      },
+    ],
+  }
 };
 
 const RootLayout: Component<PropsWithChildren> = ({ children }) => {
