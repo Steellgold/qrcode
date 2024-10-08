@@ -13,6 +13,9 @@ import { useThemesStore } from "./store/use-themes";
 import { EyeRadius, QRStyle, TabType, ThemeColor, themes } from "@/lib/theme";
 import { Panel } from "./panel";
 import { ColorCircle } from "./color-circle";
+import { Label } from "./ui/label";
+import { Slider } from "./ui/slider";
+import { Checkbox } from "./ui/checkbox";
 
 export const Customizer = (): ReactElement => {
   const { setTheme, selectedTheme, customs, addCustomTheme, removeCustomTheme } = useThemesStore();
@@ -20,6 +23,10 @@ export const Customizer = (): ReactElement => {
 
   const [eyeRadius, setEyeRadius] = useState<EyeRadius>(0);
   const [qrStyle, setQRStyle] = useState<QRStyle>("squares");
+
+  const [centerImage, setCenterImage] = useState<string | null>(null);
+  const [imageSize, setImageSize] = useState<number>(0);
+  const [removeBgImage, setRemoveBgImage] = useState<boolean>(true);
 
   const [content, setContent] = useState("https://qr-color.vercel.app/");
 
@@ -104,6 +111,7 @@ export const Customizer = (): ReactElement => {
 
     if(content) {
       setContent(content);
+      toast.success("Content loaded from URL query parameter");
     }
   }, []);
 
@@ -130,6 +138,12 @@ export const Customizer = (): ReactElement => {
                 eyeColor={selectedTheme.colors[2]}
                 eyeRadius={eyeRadius}
                 qrStyle={qrStyle}
+
+                logoHeight={imageSize}
+                logoWidth={imageSize}
+                logoImage={centerImage ?? ""}
+                removeQrCodeBehindLogo={removeBgImage}
+
                 id="qr-code-component"
               />
               <p className="text-sm text-center text-muted-foreground font-normal">{selectedTheme.name}</p>
@@ -161,7 +175,7 @@ export const Customizer = (): ReactElement => {
           </div>
         </div>
 
-        <Tabs defaultValue="default" className="w-full" onValueChange={(value) => setTab(value as TabType)}>
+        <Tabs defaultValue="custom" className="w-full" onValueChange={(value) => setTab(value as TabType)}>
           <TabsList className="w-full">
             <TabsTrigger value="default">Default</TabsTrigger>
             <TabsTrigger value="custom">Custom</TabsTrigger>
@@ -169,7 +183,7 @@ export const Customizer = (): ReactElement => {
             <TabsTrigger value="favorites">Favorites</TabsTrigger>
           </TabsList>
           <TabsContent value="default">
-            <div className="flex flex-wrap gap-2 justify-start">
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
               {themes.map((theme) => (
                 <ColorCircle
                   key={theme.id}
@@ -187,7 +201,7 @@ export const Customizer = (): ReactElement => {
 
             {customs.length > 0 && <>
               <p className="text-sm text-muted-foreground mt-2">Custom themes ({customs.length})</p>
-              <div className="flex flex-wrap gap-2 justify-start mt-2">
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start mt-2">
                 {customs.map((theme) => (
                   <ColorCircle
                     key={theme.id}
@@ -205,7 +219,7 @@ export const Customizer = (): ReactElement => {
             </>}
           </TabsContent>
           <TabsContent value="custom">
-            <Accordion type="single" collapsible>
+            <Accordion type="single" collapsible defaultValue="item-5">
               <AccordionItem value="item-1">
                 <AccordionTrigger>
                   Background
@@ -331,6 +345,52 @@ export const Customizer = (): ReactElement => {
                   </div>
                 </AccordionContent>
               </AccordionItem>
+
+              <AccordionItem value="item-5">
+                <AccordionTrigger>
+                  Image
+                </AccordionTrigger>
+                <AccordionContent>
+                  <input type="file" accept="image/png" id="file" style={{ display: "none" }} onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (e) => setCenterImage(e.target?.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+
+                  <div className="flex flex-row gap-2">
+                    <Button variant="outline" onClick={() => document.getElementById("file")?.click()}>
+                      Upload Image
+                    </Button>
+
+                    <Button variant="outline" onClick={() => setCenterImage(null)} disabled={!centerImage}>
+                      Remove Image
+                    </Button>
+                  </div>
+
+                  <div className="gap-2 mt-4">
+                    <Label>Select image size</Label>
+                    <Slider
+                      id="imageSize"
+                      defaultValue={[32]}
+                      min={0}
+                      max={50}
+                      step={1}
+                      onValueChange={(value) => setImageSize(value[0])}
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2 mt-4">
+                    {/* @ts-ignore */}
+                    <Checkbox id="rmbg" checked={removeBgImage} onCheckedChange={(checked) => setRemoveBgImage(checked)} />
+                    <Label htmlFor="rmbg" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Remove QR code behind logo
+                    </Label>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
 
             <div className="flex flex-row items-center gap-2 mt-3">
@@ -340,18 +400,23 @@ export const Customizer = (): ReactElement => {
                 className="w-full border-2 rounded-md p-1 text-sm"
               />
 
-              <Button variant="outline" className="flex items-center" onClick={() => {
-                addCustomTheme({
-                  name: custom.name,
-                  colors: custom.colors,
-                  eyeRadius: eyeRadius,
-                  qrStyle: qrStyle,
-                  id: Math.random().toString(36).substring(7),
-                  isCustom: true
-                })
+              <Button
+                variant="outline"
+                className="flex items-center"
+                onClick={() => {
+                  addCustomTheme({
+                    name: custom.name,
+                    colors: custom.colors,
+                    eyeRadius: eyeRadius,
+                    qrStyle: qrStyle,
+                    id: Math.random().toString(36).substring(7),
+                    isCustom: true
+                  })
 
-                toast.success("Custom theme saved successfully!");
-              }}>
+                  toast.success("Custom theme saved successfully!");
+                }}
+                disabled={customs.some((theme) => theme.name === custom.name)}
+              >
                 <Palette className="h-4 w-4 mr-1" />
                 Save Theme
               </Button>
