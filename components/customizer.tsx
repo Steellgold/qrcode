@@ -3,7 +3,6 @@
 import { ReactElement, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
 import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Globe, Palette, Bookmark } from "lucide-react";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
@@ -164,6 +163,7 @@ export const Customizer = (): ReactElement => {
             <div className="flex flex-wrap gap-2 justify-start">
               {themes.map((theme) => (
                 <ColorCircle
+                  key={theme.id}
                   isSelected={selectedTheme.id === theme.id}
                   theme={theme}
                   onClick={() => {
@@ -181,6 +181,7 @@ export const Customizer = (): ReactElement => {
               <div className="flex flex-wrap gap-2 justify-start mt-2">
                 {customs.map((theme) => (
                   <ColorCircle
+                    key={theme.id}
                     isSelected={selectedTheme.id === theme.id}
                     theme={theme}
                     onClick={() => {
@@ -347,7 +348,7 @@ export const Customizer = (): ReactElement => {
               </Button>
             </div>
 
-            <p className="text-xs text-muted-foreground mt-2">Saved themes saved to local storage and displayed in the "Default" tab.</p>
+            <p className="text-xs text-muted-foreground mt-2">Saved themes saved to local storage and displayed in the &quot;Default&quot; tab.</p>
 
           </TabsContent>
           <TabsContent value="explore" className="h-64">

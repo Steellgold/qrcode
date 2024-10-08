@@ -33,7 +33,7 @@ export const Panel: Component<PanelProps> = ({
   history, setThemeFromHistory,
   copyImage, downloadImage,
   tab,
-  selectedTheme, handleDeleteCustomTheme, handleResetTheme
+  selectedTheme, handleDeleteCustomTheme
 }) => {
   return <>
     <div className="flex flex-row justify-center gap-0.5">
