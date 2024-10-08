@@ -4,9 +4,10 @@ import { ReactElement, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History } from "lucide-react";
+import { Square, Squircle, Circle, Dot, Droplet, Grid2X2, Dices, Copy, Shuffle, ImageDown, History, Globe, Palette, Bookmark } from "lucide-react";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 type ThemeColor = {
   name: string;
@@ -247,39 +248,67 @@ export const Customizer = (): ReactElement => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center">
-          {themes.map((theme) => (
-            <Button
-              key={theme.name}
-              variant="outline"
-              className={cn("w-10 h-10 p-0 rounded-full overflow-hidden relative", {
-                "ring-2 ring-primary": selectedTheme.name === theme.name
-              })}
-              title={theme.name}
-              onClick={() => {
-                setTheme(theme);
-                buildQRUrl();
-              }}
-            >
-              {theme.colors.map((color: string, index: number) => {
-                const rotation = (index / theme.colors.length) * 360;
-                const skew = (1 / theme.colors.length) * 360;
-                return (
-                  <div
-                    key={index}
-                    className="absolute inset-0"
-                    style={{
-                      backgroundColor: color,
-                      transform: `rotate(${rotation}deg) skew(${skew}deg)`,
-                      transformOrigin: '50% 50%',
-                      borderColor: theme.colors[(index + 1) % theme.colors.length]
-                    }}
-                  />
-                );
-              })}
-            </Button>
-          ))}
-        </div>
+        <Tabs defaultValue="default" className="w-full">
+          <TabsList className="w-full">
+            <TabsTrigger value="default">Default</TabsTrigger>
+            <TabsTrigger value="custom">Custom</TabsTrigger>
+            <TabsTrigger value="explore">Explore</TabsTrigger>
+            <TabsTrigger value="favorites">Favorites</TabsTrigger>
+          </TabsList>
+          <TabsContent value="default">
+            <div className="flex flex-wrap gap-2 justify-center">
+              {themes.map((theme) => (
+                <Button
+                  key={theme.name}
+                  variant="outline"
+                  className={cn("w-10 h-10 p-0 rounded-full overflow-hidden relative", {
+                    "ring-2 ring-primary": selectedTheme.name === theme.name
+                  })}
+                  title={theme.name}
+                  onClick={() => {
+                    setTheme(theme);
+                    buildQRUrl();
+                  }}
+                >
+                  {theme.colors.map((color: string, index: number) => {
+                    const rotation = (index / theme.colors.length) * 360;
+                    const skew = (1 / theme.colors.length) * 360;
+                    return (
+                      <div
+                        key={index}
+                        className="absolute inset-0"
+                        style={{
+                          backgroundColor: color,
+                          transform: `rotate(${rotation}deg) skew(${skew}deg)`,
+                          transformOrigin: '50% 50%',
+                          borderColor: theme.colors[(index + 1) % theme.colors.length]
+                        }}
+                      />
+                    );
+                  })}
+                </Button>
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="custom" className="h-64">
+            <div className="flex flex-col items-center justify-center gap-2 h-full">
+              <Palette size={30} className="text-primary" />
+              <p className="text-muted-foreground">This feature is coming soon!</p>
+            </div>
+          </TabsContent>
+          <TabsContent value="explore" className="h-64">
+            <div className="flex flex-col items-center justify-center gap-2 h-full">
+              <Globe size={30} className="text-primary" />
+              <p className="text-muted-foreground">This feature is coming soon!</p>
+            </div>
+          </TabsContent>
+          <TabsContent value="favorites" className="h-64">
+            <div className="flex flex-col items-center justify-center gap-2 h-full">
+              <Bookmark size={30} className="text-primary" />
+              <p className="text-muted-foreground">This feature is coming soon!</p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )
